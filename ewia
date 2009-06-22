@@ -1,0 +1,104 @@
+#!/usr/bin/python3
+from Compass import Compass
+from CmdLineOpts import CmdLineOpts
+from CalculationParameters import CalculationParameters
+from Table import Table
+import sys
+import copy
+
+stdoutput = Table([ "%-25s", "%s" ], [ None, ": ", None ])
+parseoutput = Table([ "%s" ], [ None, None ])
+options = CmdLineOpts()
+params = CalculationParameters(options)
+
+if options["quiet"]:
+	stdoutput.quiet()
+if not options["parsable"]:
+	parseoutput.quiet()
+
+object = params["object"]
+localdatetime = params["localdate"]
+localpos = params["localpos"]
+
+lst = localdatetime.LST(localpos)
+ha = object.hourangle(lst)
+(alt, az) = object.alt_az(lst, localpos)
+if options["verbose"]:
+	stdoutput.put(["Local position",		localpos])
+	stdoutput.put(["Local time",			localdatetime.localstr()])
+	stdoutput.put(["UT time",				localdatetime])
+	stdoutput.put(["Local siderial time",	lst])
+
+if options["verbose"] or options["ephemeris"]:
+	stdoutput.put(["Absolute position", object])
+stdoutput.put(["Position", "HA %s, DEC %s" % (ha, object.dec())])
+stdoutput.put(["Azimuth, Altitude", "%.1f° (%s), %.1f°" % (az.value(), Compass.direction(az.value()), alt.value())])
+
+abovehorizon = alt.value() >= options["rfcutoff"]
+timerange = (options["ostimewin"] is None) or (options["ostimewin"].ismet(localdatetime))
+visible = abovehorizon and timerange
+
+parseoutput.put(["LocalPos|%f|%f|%s|%s" % (localpos.latitude().value(), localpos.longitude().value(), localpos.latitude(), localpos.longitude())])
+parseoutput.put(["ObjectPos|%f|%f|%s|%s" % (object.ra().value(), object.dec().value(), object.ra(), object.dec())])
+parseoutput.put(["LocalTime|%s|%f" % (localdatetime.localstr(), localdatetime.JD())])
+parseoutput.put(["UTTime|%s" % (localdatetime)])
+parseoutput.put(["DaysSinceJ2000.0|%f" % (localdatetime.days_since_y2k())])
+parseoutput.put(["LocalSiderialTime|%s|%f" % (lst, lst.value())])
+parseoutput.put(["HourAngle|%s|%f" % (lst, lst.value())])
+parseoutput.put(["Azimuth|%s|%f" % (az, az.value())])
+parseoutput.put(["Altitude|%s|%f" % (alt, alt.value())])
+parseoutput.put(["InitialVisibility|%d" % ([0, 1][visible])])
+
+stdoutput.put(["Initial visibility", ["Invisible", "Visible"][visible]])
+
+if options["risefall"] is False:
+	sys.exit(0)
+
+stepcnt = int(options["rfwindow"] / options["rfgran"])
+visiblecnt = 0
+ephpass = 0
+if visible:
+	risetime = copy.deepcopy(localdatetime)
+else:
+	risetime = None
+for i in range(stepcnt):
+	localdatetime += (options["rfgran"])			# Localdate in seconds
+	if options["ephemeris"]:
+		ephpass += options["rfgran"]
+		if ephpass >= options["ephwindow"]:
+			ephpass = 0
+			object = params.recalculate_skypos(localdatetime)
+			if options["verbose"]:
+				stdoutput.put(["Recalculated position", "%s -> %s" % (localdatetime.localstr(), object)])
+			parseoutput.put(["NewEphPosition|%s|%f|%s|%f|%f" % (localdatetime.localstr(), localdatetime.JD(), object, object.ra().value(), object.dec().value())])
+
+	lst = localdatetime.LST(localpos)
+	ha = object.hourangle(lst)
+	(alt, az) = object.alt_az(lst, localpos)
+	
+	abovehorizon = alt.value() >= options["rfcutoff"]
+	timerange = (options["ostimewin"] is None) or (options["ostimewin"].ismet(localdatetime))
+
+	if visible and ((not abovehorizon) or (not timerange)):
+		visible = False
+		if risetime is not None:
+			vistime = localdatetime - risetime
+			stdoutput.put(["Object setting at", "%s (visible for %d:%02d h:m)" % (localdatetime.localstr(), int(vistime), (vistime - int(vistime)) * 60)])
+			parseoutput.put(["ObjectSetting|%s|%f|%f" % (localdatetime.localstr(), localdatetime.JD(), vistime)])
+		else:
+			stdoutput.put(["Object setting at", (localdatetime.localstr())])
+			parseoutput.put(["ObjectSetting|%s|%f|NA" % (localdatetime.localstr(), localdatetime.JD())])
+	elif (not visible) and abovehorizon and timerange:
+		visible = True
+		stdoutput.put(["Object rising at", (localdatetime.localstr())])
+		parseoutput.put(["ObjectRising|%s|%f" % (localdatetime.localstr(), localdatetime.JD())])
+		risetime = copy.deepcopy(localdatetime)
+	if visible:
+		visiblecnt +=1
+
+prc = visiblecnt / stepcnt
+
+stdoutput.put(["Visibility", "%.0f%% (%.0f%% invisible)" % (100 * prc, 100 - (100 * prc))])
+stdoutput.put(["Average visiblity per day", "%d:%02d h:m" % (int(24 * prc), ((24 * prc) - int(24 * prc)) * 60)])
+parseoutput.put(["VisibilityFraction|%f" % (prc)])
+
