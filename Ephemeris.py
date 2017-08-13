@@ -143,21 +143,21 @@ class Ephemeris():
 
 		# Mean anomaly
 		m_x = (2 * pi * (t - par["T"]) / P_x) % (2 * pi)
-		
+
 		# Find the eccentric anomaly
 		u_x = Ephemeris.__ecc_anomaly(par, m_x)
-		
+
 		# Find CHPV''' (canonical heliocentric position vector, triple prime)
 		chpv3_x = VectorR3(par["a"] * (cos(u_x) - par["e"]),
 							par["a"] * sin(u_x) * sqrt(1 - par["e"] ** 2),
 							0)
-		
+
 		# Rotate the triple-prime position vector by the argument of the parrihelion, ω
 		chpv2_x = chpv3_x.rotate_xy(par["omega"])
-		
+
 		# Rotate the double-prime position vector by the inclination, i.
 		chpv1_x = chpv2_x.rotate_yz(par["i"])
-		
+
 		# Rotate the single-prime position vector by the longitude of the ascending node, Ω.
 		chpv_x = chpv1_x.rotate_xy(par["Omega"])
 
@@ -170,10 +170,10 @@ class Ephemeris():
 			"chpv2":	chpv2_x,	# CHPV''
 			"chpv3":	chpv3_x,	# CHPV'''
 		}
-	
+
 	def calculate(skyobject, date):
 		t = date.JD()
-		
+
 		# Parameters of earth and the other object
 		pe = Ephemeris.__orbital_elements["Earth"]
 		px = Ephemeris.__orbital_elements[skyobject]
@@ -182,7 +182,7 @@ class Ephemeris():
 		res_e = Ephemeris.__calculate_for_obj(pe, t)
 		res_x = Ephemeris.__calculate_for_obj(px, t)
 
-		# Find the vector difference between the heliocentric position vector of object X and 
+		# Find the vector difference between the heliocentric position vector of object X and
 		# the heliocentric position vector to Earth.
 		d = res_x["chpv"] - res_e["chpv"]
 

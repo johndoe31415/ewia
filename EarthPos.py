@@ -1,5 +1,5 @@
 #   Ewia - A tool to calculate astrophysical object positions.
-#   Copyright (C) 2009-2009 Johannes Bauer
+#   Copyright (C) 2009-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -17,11 +17,9 @@
 #    along with Ewia; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#   Johannes Bauer
-#   JohannesBauer@gmx.de
+#   Johannes Bauer <JohannesBauer@gmx.de>
 
-from DEG import DEG
-class EarthPos():
+class EarthPos(object):
 	def __init__(self, latitude, longitude):
 		if latitude[0] not in [ "N", "S" ]:
 			raise Exception("Local earth position latitude must start with N or S")
@@ -33,7 +31,7 @@ class EarthPos():
 
 		if latitude[0] == "S":
 			self.__latitude.negate()
-		
+
 		if longitude[0] == "W":
 			self.__longitude.negate()
 
