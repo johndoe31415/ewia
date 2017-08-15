@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-#
 #   Ewia - A tool to calculate astrophysical object positions.
 #   Copyright (C) 2017-2017 Johannes Bauer
 #
@@ -20,21 +18,24 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
-import sys
-import skylib
 
-from FriendlyArgumentParser import FriendlyArgumentParser
+import unittest
 
-parser = FriendlyArgumentParser()
-parser.add_argument("-c", "--user-catalog", metavar = "filename", type = str, action = "append", default = [ ], help = "Specifies user catalogs to read after system catalogs have been read.")
-parser.add_argument("--no-system-catalog", action = "store_true", help = "Do not read system catalogs (by default, ~/.config/ewia/catalog.json and ./.catalog.json are tried)")
-args = parser.parse_args(sys.argv[1:])
+from skylib import EarthPos
 
-catalog = skylib.ObjectCatalog()
-if not args.no_system_catalog:
-	for system_catalog_filename in [ "~/.config/ewia/catalog.json", ".catalog.json" ]:
-		catalog.append_from_file(system_catalog_filename, fail_on_error = False)
-for user_catalog_filename in args.user_catalog:
-	catalog.append_from_file(system_catalog_filename, fail_on_error = True)
+class EarthPosTests(unittest.TestCase):
+	def test_pos1(self):
+		pos = EarthPos.from_str("N 123.456", "E 12.34")
+		self.assertAlmostEqual(pos.latitude, 123.456)
+		self.assertAlmostEqual(pos.longitude, 12.34)
 
+		pos = EarthPos.from_str("S 123.456", "E 12.34")
+		self.assertAlmostEqual(pos.latitude, -123.456)
+		self.assertAlmostEqual(pos.longitude, 12.34)
 
+		pos = EarthPos.from_str("S 123.456", "W 12.34")
+		self.assertAlmostEqual(pos.latitude, -123.456)
+		self.assertAlmostEqual(pos.longitude, -12.34)
+
+	def test_pos_deg(self):
+		pos = EarthPos.from_str("N 5° 7' 11.201\"", "E 11° 13' 17.101\"")

@@ -20,3 +20,4 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 from .TrivialTests import TrivialTests
+from .EarthPosTests import EarthPosTests

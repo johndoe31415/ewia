@@ -20,3 +20,4 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 from .ObjectCatalog import ObjectCatalog
+from .EarthPos import EarthPos
