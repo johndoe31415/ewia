@@ -39,8 +39,16 @@ class ParseTools(object):
 		return fresult
 
 	@classmethod
-	def _compile_deg_regex(cls, negative_prefix, positive_prefix):
-		regex_text = r"(?P<sign>[" + negative_prefix + positive_prefix + "])\s*"
+	def _re_escape(cls, re_text):
+		if re_text == "+":
+			return r"\+"
+		else:
+			return re_text
+
+	@classmethod
+	def _compile_deg_regex(cls, negative_prefixes, positive_prefixes):
+		prefixes = [ cls._re_escape(prefix) for prefix in negative_prefixes + positive_prefixes ]
+		regex_text = r"(?P<sign>" + "|".join(prefixes) + ")\s*"
 		regex_text += "("
 		regex_text += r"(?P<deg_float>\d+(\.\d*)?)\s*°?"
 		regex_text += "|"
@@ -49,12 +57,12 @@ class ParseTools(object):
 		return re.compile(regex_text)
 
 	@classmethod
-	def _get_deg_regex(cls, negative_prefix, positive_prefix):
-		assert(isinstance(negative_prefix, str))
-		assert(isinstance(positive_prefix, str))
-		key = (negative_prefix, positive_prefix)
+	def _get_deg_regex(cls, negative_prefixes, positive_prefixes):
+		assert(isinstance(negative_prefixes, tuple))
+		assert(isinstance(positive_prefixes, tuple))
+		key = (negative_prefixes, positive_prefixes)
 		if key not in cls._deg_res:
-			cls._deg_res[key] = cls._compile_deg_regex(negative_prefix, positive_prefix)
+			cls._deg_res[key] = cls._compile_deg_regex(negative_prefixes, positive_prefixes)
 		return cls._deg_res[key]
 
 	@classmethod

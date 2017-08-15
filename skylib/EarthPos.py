@@ -59,11 +59,11 @@ class EarthPos(object):
 
 	@classmethod
 	def latitude_from_string(cls, text):
-		return ParseTools.parse_deg("S", "N", text)
+		return ParseTools.parse_deg(("S", ), ("N", ), text)
 
 	@classmethod
 	def longitude_from_string(cls, text):
-		return ParseTools.parse_deg("W", "E", text)
+		return ParseTools.parse_deg(("W", ), ("E", ), text)
 
 	@classmethod
 	def from_str(cls, latitude_str, longitude_str):

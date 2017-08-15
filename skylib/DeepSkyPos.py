@@ -42,7 +42,7 @@ class DeepSkyPos(object):
 
 	@classmethod
 	def from_data(cls, data):
-		return cls(ra = ParseTools.parse_hms(data["ra"]), dec = ParseTools.parse_deg("-", "+", data["dec"]))
+		return cls(ra = ParseTools.parse_hms(data["ra"]), dec = ParseTools.parse_deg(("-", ), ("+", ""), data["dec"]))
 
 	def __str__(self):
 		return "DeepSkyPos<RA = %.3f hrs, dec = %.3f°>" % (self.ra, self.dec)
