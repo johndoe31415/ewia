@@ -19,11 +19,17 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
+import re
+
 class DeepSkyPos(object):
+
 	def __init__(self, ra, dec):
-		pass
+		assert(0 <= ra < 24)
+		assert(-90 < dec < 90)
+		self._ra = ra
+		self._dec = dec
 
 	@classmethod
 	def from_data(cls, data):
-		pass
+		print(data)
 
