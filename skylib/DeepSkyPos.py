@@ -20,16 +20,29 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 import re
+from skylib.Tools import ParseTools
 
 class DeepSkyPos(object):
-
 	def __init__(self, ra, dec):
+		assert(isinstance(ra, float))
+		assert(isinstance(dec, float))
 		assert(0 <= ra < 24)
 		assert(-90 < dec < 90)
-		self._ra = ra
-		self._dec = dec
+		self.__ra = ra
+		self.__dec = dec
+		print(self)
+
+	@property
+	def ra(self):
+		return self.__ra
+
+	@property
+	def dec(self):
+		return self.__dec
 
 	@classmethod
 	def from_data(cls, data):
-		print(data)
+		return cls(ra = ParseTools.parse_hms(data["ra"]), dec = ParseTools.parse_deg("-", "+", data["dec"]))
 
+	def __str__(self):
+		return "DeepSkyPos<RA = %.3f hrs, dec = %.3f°>" % (self.ra, self.dec)

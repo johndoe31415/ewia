@@ -20,12 +20,9 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 import re
+from skylib.Tools import ParseTools
 
 class EarthPos(object):
-	# (?P<deg_float>\d+(\.\d*)?)\s*°?
-	# (?P<deg_int>\d+)\s*°(\s*(?P<min_int>\d+)\s*'(\s*(?P<sec_float>\d+(\.\d*)?)\s*'')?)?
-	_lat_long_re = re.compile(r"(?P<sign>[NSEW])\s*((?P<deg_float>\d+(\.\d*)?)\s*°?|(?P<deg_int>\d+)\s*°(\s*(?P<min_int>\d+)\s*'(\s*(?P<sec_float>\d+(\.\d*)?)\s*(''|\"))?)?)")
-
 	def __init__(self, latitude, longitude):
 		assert(isinstance(latitude, float))
 		assert(isinstance(longitude, float))
@@ -61,36 +58,12 @@ class EarthPos(object):
 		return "WE"[self.__longitude > 0] + " " + self.__value_to_str_dms(abs(self.__longitude))
 
 	@classmethod
-	def latlong_from_string(cls, text, parse_as_latitude = True):
-		result = cls._lat_long_re.fullmatch(text)
-		if result is None:
-			raise Exception("Cannot parse '%s' as %s." % (text, ["longitude", "latitude"][parse_as_latitude]))
-
-		result = result.groupdict()
-		if parse_as_latitude and (result["sign"] not in "NS"):
-			raise Exception("Cannot parse '%s' as %s: Expected N or S, but got %s." % (text, ["longitude", "latitude"][parse_as_latitude], result["sign"]))
-		elif (not parse_as_latitude) and (result["sign"] not in "WE"):
-			raise Exception("Cannot parse '%s' as %s: Expected E or W, but got %s." % (text, ["longitude", "latitude"][parse_as_latitude], result["sign"]))
-
-		if result["deg_float"] is not None:
-			fresult = float(result["deg_float"])
-		else:
-			fresult = float(result["deg_int"])
-			if result["min_int"] is not None:
-				fresult += float(result["min_int"]) / 60
-			if result["sec_float"] is not None:
-				fresult += float(result["sec_float"]) / 3600
-		if result["sign"] in "WS":
-			fresult = -fresult
-		return fresult
-
-	@classmethod
 	def latitude_from_string(cls, text):
-		return cls.latlong_from_string(text, parse_as_latitude = True)
+		return ParseTools.parse_deg("S", "N", text)
 
 	@classmethod
 	def longitude_from_string(cls, text):
-		return cls.latlong_from_string(text, parse_as_latitude = False)
+		return ParseTools.parse_deg("W", "E", text)
 
 	@classmethod
 	def from_str(cls, latitude_str, longitude_str):

@@ -21,8 +21,8 @@
 
 import re
 
-class Tools(object):
-	_hms_re = re.compile("(?P<hrs>\d{1,2}):(?P<minutes>\d{2}):(?P<seconds>\d{2}(\.\d*)?)")
+class ParseTools(object):
+	_hms_re = re.compile("(?P<hrs>\d{1,2}):((?P<minutes_float>\d{2}(\.\d*)?)|(?P<minutes_int>\d{2}):(?P<seconds>\d{2}(\.\d*)?))")
 	_deg_res = { }
 
 	@classmethod
@@ -30,7 +30,13 @@ class Tools(object):
 		result = cls._hms_re.fullmatch(text)
 		if result is None:
 			raise Exception("Cannot parse '%s' as hour:minutes:seconds value." % (text))
-		return float(result["hrs"]) + (float(result["minutes"]) / 60) + (float(result["seconds"]) / 3600)
+		result = result.groupdict()
+		fresult = float(result["hrs"])
+		if result["minutes_float"] is not None:
+			fresult += float(result["minutes_float"]) / 60
+		else:
+			fresult += (float(result["minutes_int"]) / 60) + (float(result["seconds"]) / 3600)
+		return fresult
 
 	@classmethod
 	def _compile_deg_regex(cls, negative_prefix, positive_prefix):
@@ -38,22 +44,22 @@ class Tools(object):
 		regex_text += "("
 		regex_text += r"(?P<deg_float>\d+(\.\d*)?)\s*°?"
 		regex_text += "|"
-		regex_text += r"(?P<deg_int>\d+)\s*°(\s*(?P<min_int>\d+)\s*'(\s*(?P<sec_float>\d+(\.\d*)?)\s*'')?)?"
+		regex_text += r"(?P<deg_int>\d+)\s*°(\s*(?P<min_int>\d+)\s*'(\s*(?P<sec_float>\d+(\.\d*)?)\s*(''|\"))?)?"
 		regex_text += ")"
 		return re.compile(regex_text)
 
 	@classmethod
 	def _get_deg_regex(cls, negative_prefix, positive_prefix):
-		assert(isinstance(str, negative_prefix))
-		assert(isinstance(str, positive_prefix))
+		assert(isinstance(negative_prefix, str))
+		assert(isinstance(positive_prefix, str))
 		key = (negative_prefix, positive_prefix)
 		if key not in cls._deg_res:
-			cls._deg_res[key] = self._compile_deg_regex(negative_prefix, positive_prefix)
+			cls._deg_res[key] = cls._compile_deg_regex(negative_prefix, positive_prefix)
 		return cls._deg_res[key]
 
 	@classmethod
 	def parse_deg(cls, negative_prefix, positive_prefix, text):
-		regex = self._get_deg_regex(negative_prefix, positive_prefix)
+		regex = cls._get_deg_regex(negative_prefix, positive_prefix)
 		result = regex.fullmatch(text)
 		if result is None:
 			raise Exception("Cannot parse '%s'." % (text))
