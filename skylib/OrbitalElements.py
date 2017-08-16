@@ -82,48 +82,46 @@ class OrbitalElements(object):
 		return cls(a = data["a"], e = data["e"], i = data["i"], Omega = data["Omega"], omega = data["omega"], T = data["T"], M = data["M"])
 
 	# Calculates eccentric anomaly using Danby's method
-	def __ecc_anomaly(par, m):
-		u1 = m
+	def __calculate_eccentric_anomaly(self, mean_anomaly):
+		u1 = mean_anomaly
 		while True:
 			u0 = u1
-			f0 = u0 - par.e * math.sin(u0) - m
-			f1 = 1 - par.e * math.cos(u0)
-			f2 = par.e * math.sin(u0)
-			f3 = par.e * math.cos(u0)
+			f0 = u0 - self.e * math.sin(u0) - mean_anomaly
+			f1 = 1 - self.e * math.cos(u0)
+			f2 = self.e * math.sin(u0)
+			f3 = self.e * math.cos(u0)
 			d1 = -f0 / f1
-			d2 = -f0 / ( f1 + d1 * f2 / 2 )
-			d3 = -f0 / ( f1 + d1 * f2 / 2 + (d2**2) * f3 / 6 )
+			d2 = -f0 / (f1 + d1 * f2 / 2)
+			d3 = -f0 / (f1 + (d1 * f2 / 2) + (d2 ** 2) * f3 / 6)
 			u1 = u0 + d3
 			if abs(u1 - u0) < 1e-15:
 				break
 		u = u1
 		return u
 
-
-
-	def __calculate_for_obj(par, t):
+	def __orbital_vectors_at_julian_date(self, t):
 		# Orbital period
-		P_x = 365.256898326 * par.a ** 1.5 / (1 + par.M)
+		P_x = 365.256898326 * (self.a ** 1.5) / (1 + self.M)
 
 		# Mean anomaly
-		m_x = (2 * math.pi * (t - par.T) / P_x) % (2 * math.pi)
+		m_x = (2 * math.pi * (t - self.T) / P_x) % (2 * math.pi)
 
 		# Find the eccentric anomaly
-		u_x = par.__ecc_anomaly(m_x)
+		u_x = self.__calculate_eccentric_anomaly(mean_anomaly = m_x)
 
 		# Find CHPV''' (canonical heliocentric position vector, triple prime)
-		chpv3_x = VectorR3(par.a * (math.cos(u_x) - par.e),
-							par.a * math.sin(u_x) * math.sqrt(1 - par.e ** 2),
+		chpv3_x = VectorR3(self.a * (math.cos(u_x) - self.e),
+							self.a * math.sin(u_x) * math.sqrt(1 - self.e ** 2),
 							0)
 
-		# Rotate the triple-prime position vector by the argument of the parrihelion, ω
-		chpv2_x = chpv3_x.rotate_xy(par.omega)
+		# Rotate the triple-prime position vector by the argument of the selfrihelion, ω
+		chpv2_x = chpv3_x.rotate_xy(self.omega)
 
 		# Rotate the double-prime position vector by the inclination, i.
-		chpv1_x = chpv2_x.rotate_yz(par.i)
+		chpv1_x = chpv2_x.rotate_yz(self.i)
 
 		# Rotate the single-prime position vector by the longitude of the ascending node, Ω.
-		chpv_x = chpv1_x.rotate_xy(par.Omega)
+		chpv_x = chpv1_x.rotate_xy(self.Omega)
 
 		return {
 			"P":		P_x,		# Orbital period
@@ -147,8 +145,8 @@ class OrbitalElements(object):
 		px = self
 
 		# Calculations for object
-		res_e = pe.__calculate_for_obj(t)
-		res_x = px.__calculate_for_obj(t)
+		res_e = pe.__orbital_vectors_at_julian_date(t)
+		res_x = px.__orbital_vectors_at_julian_date(t)
 
 		# Find the vector difference between the heliocentric position vector of object X and
 		# the heliocentric position vector to Earth.
