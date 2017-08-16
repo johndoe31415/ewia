@@ -37,6 +37,7 @@ class ApparentPosition(object):
 		292.5:	"WNW",
 		315:	"NW",
 		337.5:	"NNW",
+		360:	"N",
 	}
 
 	def __init__(self, altitude, azimuth, observed_object = None, observer_location = None, observation_time = None):
@@ -80,7 +81,9 @@ class ApparentPosition(object):
 
 	@property
 	def azimuth_compass(self):
-		return "MOO"
+		values = [ (abs(self.azimuth - deg), direction) for (deg, direction) in self._COMPASS_ROSE.items() ]
+		values.sort()
+		return values[0][1]
 
 	def __str__(self):
 		return "%s observed from %s at %s: altitude %.1f° azimuth %.1f (%s)" % (self.observed_object, self.observer_location, self.observation_time, self.altitude, self.azimuth, self.azimuth_compass)
