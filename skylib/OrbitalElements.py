@@ -159,11 +159,11 @@ class OrbitalElements(object):
 
 		distance = d1.length()
 
-		RA1 = math.atan2(d1[1], d1[0])
-		RA = (RA1 * 12 / math.pi) % 24
+		right_ascension_rad = math.atan2(d1[1], d1[0])
+		right_ascension_hrs = (right_ascension_rad * 24 / (2 * math.pi)) % 24
 
-		DEC = math.asin(d1[2] / distance) * 180 / math.pi
-		equatorial_pos = EquatorialCoordObject(RA, DEC)
+		declination_deg = math.asin(d1[2] / distance) * 180 / math.pi
+		equatorial_pos = EquatorialCoordObject(right_ascension_hrs, declination_deg)
 		return equatorial_pos
 
 	def calculate_apparent_position(self, observer, obstime, from_orbital_element = None):
