@@ -27,7 +27,7 @@ if options["verbose"]:
 	stdoutput.put(["Local position",		localpos])
 	stdoutput.put(["Local time",			localdatetime.localstr()])
 	stdoutput.put(["UT time",				localdatetime])
-	stdoutput.put(["Local siderial time",	lst])
+	stdoutput.put(["Local sidereal time",	lst])
 
 if options["verbose"] or options["ephemeris"]:
 	stdoutput.put(["Absolute position", object])

@@ -43,8 +43,8 @@ class Time(object):
 		"""Returns the Julian date representation of the timestamp."""
 		return (self.timet / 86400) + 2440587.5
 
-	def local_siderial_time_deg(self, observer):
-		"""Return the local siderial time in degrees at the given observing
+	def local_sidereal_time_deg(self, observer):
+		"""Return the local sidereal time in degrees at the given observing
 		location."""
 		lst = 100.46
 		lst += 0.985647 * self.days_since_y2000
@@ -52,11 +52,11 @@ class Time(object):
 		lst += 15 * self.time
 		return lst % 360
 
-http://www2.arnes.si/~gljsentvid10/sidereal.htm
-	def local_siderial_time_hrs(self, observer):
-		"""Return the local siderial time in hours at the given observing
+
+	def local_sidereal_time_hrs(self, observer):
+		"""Return the local sidereal time in hours at the given observing
 		location."""
-		return self.local_siderial_time_deg(observer) / 15
+		return self.local_sidereal_time_deg(observer) / 15
 
 	def __str__(self):
 		return "Time<%s>" % (self._time_utc.strftime("%Y-%m-%d %H:%M:%S UTC"))

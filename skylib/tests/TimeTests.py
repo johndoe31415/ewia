@@ -46,13 +46,13 @@ class TimeTests(unittest.TestCase):
 		t = Time(datetime.datetime(2000, 1, 3, 13, 0, 0))
 		self.assertAlmostEqual(t.days_since_y2000, 2 + (1 / 24))
 
-	def test_local_siderial_time(self):
+	def test_local_sidereal_time(self):
 		obs = Observer.from_str("N 0", "E 13")
 		t = Time(datetime.datetime(2017, 1, 1, 10, 0, 21))
 		self.assertAlmostEqual(t.jd, 2457754.91691, places = 6)
-		self.assertAlmostEqual(t.local_siderial_time_hrs(obs), 17 + (37 / 60) + (21 / 3600), places = 3)
+		self.assertAlmostEqual(t.local_sidereal_time_hrs(obs), 17 + (37 / 60) + (21 / 3600), places = 3)
 
 		obs = Observer.from_str("N 0", "W 122.49")
 		t = Time(datetime.datetime(2010, 1, 2, 20, 34, 5))
 		self.assertAlmostEqual(t.jd, 2455199.357, places = 5)
-		self.assertAlmostEqual(t.local_siderial_time_hrs(obs), 19 + (13 / 60) + (36 / 3600), places = 3)
+		self.assertAlmostEqual(t.local_sidereal_time_hrs(obs), 19 + (13 / 60) + (36 / 3600), places = 3)
