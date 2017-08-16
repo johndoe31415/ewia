@@ -1,5 +1,5 @@
 #   Ewia - A tool to calculate astrophysical object positions.
-#   Copyright (C) 2009-2009 Johannes Bauer
+#   Copyright (C) 2009-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -21,40 +21,60 @@
 #   JohannesBauer@gmx.de
 
 from math import sqrt, sin, cos
-class VectorR3():
+
+class VectorR3(object):
 	def __init__(self, x, y, z):
-		self.__vals = [ x, y, z ]
+		self.__x = x
+		self.__y = y
+		self.__z = z
+
+	@property
+	def x(self):
+		return self.__x
+
+	@property
+	def y(self):
+		return self.__y
+
+	@property
+	def z(self):
+		return self.__z
+
+	@property
+	def length(self):
+		return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+
+	def rotate_xy(self, phi):
+		"""Rotate a vector around the the normal vector of the XY plane (Z axis)
+		angle phi, given in radians."""
+		return VectorR3(
+			self.x * cos(phi) - self.y * sin(phi),
+			self.x * sin(phi) + self.y * cos(phi),
+			self.z
+		)
+
+	def rotate_yz(self, phi):
+		"""Rotate a vector around the the normal vector of the YZ plane (X
+		axis) angle phi, given in radians."""
+		return VectorR3(
+			self.x,
+			self.y * cos(phi) - self.z * sin(phi),
+			self.y * sin(phi) + self.z * cos(phi)
+		)
+
+	def __add__(self, other):
+		return VectorR3(self.x + other.x,
+						self.y + other.y,
+						self.z + other.z)
 
 	def __sub__(self, other):
-		return VectorR3(self.__vals[0] - other.__vals[0],
-						self.__vals[1] - other.__vals[1],
-						self.__vals[2] - other.__vals[2])
-
-	def __getitem__(self, idx):
-		return self.__vals[idx]
-
-	def __str__(self):
-		return "{ %.4f %.4f %.4f }" % (self.__vals[0], self.__vals[1], self.__vals[2])
+		return VectorR3(self.x - other.x,
+						self.y - other.y,
+						self.z - other.z)
 
 	def __repr__(self):
-		return "VecR3 %s" % (str(self))
+		return "VecR3<%s>" % (str(self))
 
-	def length(self):
-		return sqrt(self.__vals[0] ** 2 + self.__vals[1] ** 2 + self.__vals[2] ** 2)
-
-	# Rotate a vector around the the normal vector of the XY plane (Z axis)
-	def rotate_xy(self, phi):
-		return VectorR3(
-			self.__vals[0] * cos(phi) - self.__vals[1] * sin(phi),
-			self.__vals[0] * sin(phi) + self.__vals[1] * cos(phi),
-			self.__vals[2]
-		)
-
-	# Rotate a vector around the the normal vector of the YZ plane (X axis)
-	def rotate_yz(self, phi):
-		return VectorR3(
-			self.__vals[0],
-			self.__vals[1] * cos(phi) - self.__vals[2] * sin(phi),
-			self.__vals[1] * sin(phi) + self.__vals[2] * cos(phi)
-		)
+	def __str__(self):
+		return "{ %.4f, %.4f, %.4f }" % (self.x, self.y, self.z)
 
