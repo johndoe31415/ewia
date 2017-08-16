@@ -1,19 +1,80 @@
 # Rewrite in progress!
 [![Build Status](https://travis-ci.org/johndoe31415/ewia.svg?branch=master)](https://travis-ci.org/johndoe31415/ewia)
 
-Ewia is currently completely overhauled. It's broken in it's current state,
-please wait for ewia2 to replace it and use the ancient tag in the meantime if
-you really want to get it.
-
 # ewia
-Ewia is a tool to calculate the earth-relative position (i.e., azimuth and
-elevation) of sky objects. This can be close objects (such as planets or the
-sun) or deep-sky objects. 
+Ewia is a tool to calculate the apparent sky position (i.e., azimuth and
+elevation) of astronomical objects such as stars or planets. It's an ancient
+project of mine (dates back to 2009) and was almost completely rewritten in
+2017. It's quite easy to use:
 
-It's an ancient project of mine (dates back to 2009) and in rough shape.
-However, I push this to GitHub for archival purposes (and it makes it easier
-for me to play around with it in the future if I feel like it).
+```
+usage: ewia [-h] [--json] [-c filename] [--no-system-catalog] -l location
+            [-t timestamp] [-z tzone]
+            object [object ...]
 
+positional arguments:
+  object                Object under observation. Must refer to the catalog.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --json                Output data in JSON format.
+  -c filename, --user-catalog filename
+                        Specifies user catalogs to read after system catalogs
+                        have been read.
+  --no-system-catalog   Do not read system catalogs (by default,
+                        ~/.config/ewia/catalog.json and ./.catalog.json are
+                        tried)
+  -l location, --observer-location location
+                        Observer location on earth. Can be either a reference
+                        to the catalog or actual coordinates.
+  -t timestamp, --observation-time timestamp
+                        Time at which the observation is conducted. Accepts
+                        the special argument 'now', which reflects the current
+                        time. Otherwise, must be in format YYYY-mm-dd
+                        HH:MM:SS.
+  -z tzone, --observation-timezone tzone
+                        When a timestamp is given, this parameter influences
+                        at which timezone the timestamp is interpreted to be
+                        in. Can either be a timezone definition such as
+                        'Europe/Berlin' or a static timezone such as 'utc' or
+                        'Etc/GMT+8'. Alternatively, can be set to 'auto' in
+                        order to take the timezone that has been specified in
+                        the catalog for the observing location. Defaults to
+                        auto.
+```
+
+Catalogs are given in JSON format and an example is included in the
+.catalog.json file. You can easily dump positions of objects:
+
+```
+$ ./ewia -l Böblingen Saturn
+Observer location: Böblingen (N48°41′16″, E9°0′17″), at time 2017-08-16 22:40:42 (Europe/Berlin)
+    Saturn: Altitude 16.1°, Azimuth 203.4° (SSW)
+```
+
+...or more objects at once...
+
+```
+$ ./ewia -l Böblingen Saturn Jupiter Venus Mars "Helix Nebula"
+Observer location: Böblingen (N48°41′16″, E9°0′17″), at time 2017-08-16 22:41:18 (Europe/Berlin)
+    Saturn: Altitude 16.1°, Azimuth 203.6° (SSW)
+    Jupiter: Altitude -2.5°, Azimuth 263.0° (W)
+    Venus: Altitude -19.6°, Azimuth 354.7° (N)
+    Mars: Altitude -17.4°, Azimuth 324.6° (NW)
+    Helix Nebula: Altitude 6.2°, Azimuth 131.7° (SE)
+```
+
+and also of course dump everything as JSON:
+
+```
+$ ./ewia -l Bamberg --json M17
+{'observations': [{'apparent_positions': [{'alt': 23.140340983650894, 'dec':
+-16.183333333333334, 'az': 192.13736107303203, 'ra': 18.346666666666668}],
+'obj_name': 'M17'}], 'observer': {'lon': 10.888149, 'tz': 'Europe/Berlin',
+'lat': 49.884559}, 'timezone': 'Europe/Berlin', 'timestamps': [{'timet':
+1502916119, 'ts_local': '2017-08-16 22:41:59', 'ts_utc': '2017-08-16
+20:41:59'}]}
+```
 
 # Author and License
 Ewia was written by Johannes Bauer <JohannesBauer@gmx.de> and is released under
