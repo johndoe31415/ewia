@@ -23,3 +23,4 @@ from .TrivialTests import TrivialTests
 from .ObserverTests import ObserverTests
 from .TimeTests import TimeTests
 from .EquatorialCoordTests import EquatorialCoordTests
+from .OrbitalElementsTests import OrbitalElementsTests

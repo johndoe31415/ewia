@@ -83,4 +83,3 @@ class EquatorialCoordObject(object):
 
 	def __str__(self):
 		return "EquatorialCoordObject<RA = %s, DEC = %s>" % (self.ra_str, self.dec_str)
-

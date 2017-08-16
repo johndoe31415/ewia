@@ -23,3 +23,4 @@ from .ObjectCatalog import ObjectCatalog
 from .Observer import Observer
 from .Time import Time
 from .EquatorialCoordObject import EquatorialCoordObject
+from .OrbitalElements import OrbitalElements

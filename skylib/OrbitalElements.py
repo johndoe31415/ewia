@@ -19,7 +19,13 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
+import math
+from skylib.VectorR3 import VectorR3
+from skylib.EquatorialCoordObject import EquatorialCoordObject
+
 class OrbitalElements(object):
+	_EARTH = None
+
 	def __init__(self, a, e, i, Omega, omega, T, M):
 		self.__a = a
 		self.__e = e
@@ -75,6 +81,97 @@ class OrbitalElements(object):
 			raise Exception("Orbital element \"M\" (object mass, given in solar masses) missing.")
 		return cls(a = data["a"], e = data["e"], i = data["i"], Omega = data["Omega"], omega = data["omega"], T = data["T"], M = data["M"])
 
+	# Calculates eccentric anomaly using Danby's method
+	def __ecc_anomaly(par, m):
+		u1 = m
+		while True:
+			u0 = u1
+			f0 = u0 - par.e * math.sin(u0) - m
+			f1 = 1 - par.e * math.cos(u0)
+			f2 = par.e * math.sin(u0)
+			f3 = par.e * math.cos(u0)
+			d1 = -f0 / f1
+			d2 = -f0 / ( f1 + d1 * f2 / 2 )
+			d3 = -f0 / ( f1 + d1 * f2 / 2 + (d2**2) * f3 / 6 )
+			u1 = u0 + d3
+			if abs(u1 - u0) < 1e-15:
+				break
+		u = u1
+		return u
+
+
+
+	def __calculate_for_obj(par, t):
+		# Orbital period
+		P_x = 365.256898326 * par.a ** 1.5 / (1 + par.M)
+
+		# Mean anomaly
+		m_x = (2 * math.pi * (t - par.T) / P_x) % (2 * math.pi)
+
+		# Find the eccentric anomaly
+		u_x = par.__ecc_anomaly(m_x)
+
+		# Find CHPV''' (canonical heliocentric position vector, triple prime)
+		chpv3_x = VectorR3(par.a * (math.cos(u_x) - par.e),
+							par.a * math.sin(u_x) * math.sqrt(1 - par.e ** 2),
+							0)
+
+		# Rotate the triple-prime position vector by the argument of the parrihelion, ω
+		chpv2_x = chpv3_x.rotate_xy(par.omega)
+
+		# Rotate the double-prime position vector by the inclination, i.
+		chpv1_x = chpv2_x.rotate_yz(par.i)
+
+		# Rotate the single-prime position vector by the longitude of the ascending node, Ω.
+		chpv_x = chpv1_x.rotate_xy(par.Omega)
+
+		return {
+			"P":		P_x,		# Orbital period
+			"m":		m_x,		# Mean anomaly
+			"u":		u_x,		# Eccentric anomaly
+			"chpv":		chpv_x,		# CHPV
+			"chpv1":	chpv1_x,	# CHPV'
+			"chpv2":	chpv2_x,	# CHPV''
+			"chpv3":	chpv3_x,	# CHPV'''
+		}
+
+
+	def calculate_equatorial_position(self, observer, obstime, from_orbital_element = None):
+		if from_orbital_element is None:
+			from_orbital_element = self._EARTH
+
+		t = obstime.jd
+
+		# Parameters of earth and the other object
+		pe = from_orbital_element
+		px = self
+
+		# Calculations for object
+		res_e = pe.__calculate_for_obj(t)
+		res_x = px.__calculate_for_obj(t)
+
+		# Find the vector difference between the heliocentric position vector of object X and
+		# the heliocentric position vector to Earth.
+		d = res_x["chpv"] - res_e["chpv"]
+
+		# Find the current obliquity of Earth.
+		epsilon = (23.439282 - 3.563e-7 * (t - 2451543.5)) / 180 * math.pi
+
+		d1 = d.rotate_yz(epsilon)
+
+		distance = d1.length()
+
+		RA1 = math.atan2(d1[1], d1[0])
+		RA = (RA1 * 12 / math.pi) % 24
+
+		DEC = math.asin(d1[2] / distance) * 180 / math.pi
+		equatorial_pos = EquatorialCoordObject(RA, DEC)
+		return equatorial_pos
+
+	def calculate_apparent_position(self, observer, obstime, from_orbital_element = None):
+		equatorial_pos = self.calculate_equatorial_position(observer, obstime, from_orbital_element)
+		return equatorial_pos.calculate_apparent_position(observer, obstime)
+
 	def __str__(self):
 		elements = [
 				("a", self.a),
@@ -88,3 +185,12 @@ class OrbitalElements(object):
 		elements = ", ".join("%s = %.2e" % (key, value) for (key, value) in elements)
 		return "OrbitalElements<%s>" % (elements)
 
+OrbitalElements._EARTH = OrbitalElements(
+	a = 1.00000011,
+	e = 0.01671022,
+	i = 0.00000087,
+	Omega = -0.19653524,
+	omega = 1.99330267,
+	T = 2454836.125,
+	M =	3.003468905535e-06
+)
