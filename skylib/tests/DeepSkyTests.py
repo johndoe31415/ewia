@@ -45,9 +45,9 @@ class DeepSkyTests(unittest.TestCase):
 		self.assertAlmostEqual(observer.latitude, 52.5)
 		self.assertAlmostEqual(observer.longitude, -1.9166667)
 
-		lst_deg = obstime.local_sidereal_time_deg(observer)
-		self.assertAlmostEqual(lst_deg, 304.80761)
+		lst_deg = obstime.local_mean_sidereal_time_deg(observer)
+		self.assertAlmostEqual(lst_deg, 304.80761, places = 3)
 
 		apparent = dsobject.calculate_apparent_position(observer, obstime)
-		self.assertAlmostEqual(apparent.altitude, 49.169122, places = 4)
-		self.assertAlmostEqual(apparent.azimuth, 269.14634, places = 4)
+		self.assertAlmostEqual(apparent.altitude, 49.169122, places = 3)
+		self.assertAlmostEqual(apparent.azimuth, 269.14634, places = 3)

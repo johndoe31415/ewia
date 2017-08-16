@@ -66,7 +66,7 @@ class DeepSkyObject(object):
 	def calculate_apparent_position(self, observer, obstime):
 		assert(isinstance(observer, Observer))
 		assert(isinstance(obstime, Time))
-		lst_deg = obstime.local_sidereal_time_deg(observer)
+		lst_deg = obstime.local_mean_sidereal_time_deg(observer)
 		hour_angle_deg = lst_deg - self.ra_deg
 
 		(dsin, dcos) = (MathTools.dsin, MathTools.dcos)

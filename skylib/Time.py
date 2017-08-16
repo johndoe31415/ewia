@@ -43,20 +43,19 @@ class Time(object):
 		"""Returns the Julian date representation of the timestamp."""
 		return (self.timet / 86400) + 2440587.5
 
-	def local_sidereal_time_deg(self, observer):
-		"""Return the local sidereal time in degrees at the given observing
-		location."""
-		lst = 100.46
-		lst += 0.985647 * self.days_since_y2000
-		lst += observer.longitude
-		lst += 15 * self.time
-		return lst % 360
+	@property
+	def greenwich_mean_sidereal_time_deg(self):
+		"""Returns GMST (Greenwich Mean Sidereal Time) in degrees, as described
+		by Keith Burnett (http://www2.arnes.si/~gljsentvid10/sidereal.htm)."""
+		t = self.days_since_y2000 / 36525
+		gmst_deg = 280.46061837 + (360.98564736629 * self.days_since_y2000) + (0.000388 * (t ** 2))
+		return gmst_deg % 360
 
+	def local_mean_sidereal_time_deg(self, observer):
+		return (self.greenwich_mean_sidereal_time_deg + observer.longitude) % 360
 
-	def local_sidereal_time_hrs(self, observer):
-		"""Return the local sidereal time in hours at the given observing
-		location."""
-		return self.local_sidereal_time_deg(observer) / 15
+	def local_mean_sidereal_time_hrs(self, observer):
+		return self.local_mean_sidereal_time_deg(observer) / 15
 
 	def __str__(self):
 		return "Time<%s>" % (self._time_utc.strftime("%Y-%m-%d %H:%M:%S UTC"))

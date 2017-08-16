@@ -50,9 +50,19 @@ class TimeTests(unittest.TestCase):
 		obs = Observer.from_str("N 0", "E 13")
 		t = Time(datetime.datetime(2017, 1, 1, 10, 0, 21))
 		self.assertAlmostEqual(t.jd, 2457754.91691, places = 6)
-		self.assertAlmostEqual(t.local_sidereal_time_hrs(obs), 17 + (37 / 60) + (21 / 3600), places = 3)
+		self.assertAlmostEqual(t.local_mean_sidereal_time_hrs(obs), 17 + (37 / 60) + (21 / 3600), places = 3)
 
 		obs = Observer.from_str("N 0", "W 122.49")
 		t = Time(datetime.datetime(2010, 1, 2, 20, 34, 5))
 		self.assertAlmostEqual(t.jd, 2455199.357, places = 5)
-		self.assertAlmostEqual(t.local_sidereal_time_hrs(obs), 19 + (13 / 60) + (36 / 3600), places = 3)
+		self.assertAlmostEqual(t.local_mean_sidereal_time_hrs(obs), 19 + (13 / 60) + (36 / 3600), places = 3)
+
+	def test_gmst(self):
+		# http://www2.arnes.si/~gljsentvid10/sidereal.htm -- there's an error
+		# in this document; it first says 280.46061837 in the equation for
+		# GMST, but later in the example uses 281.46061837. Don't have the
+		# original (Meeus formula 11.4) available, but other sources also use
+		# 280.xxx.
+		t = Time.from_str("1994-06-16 18:00:00Z")
+		gmst = t.greenwich_mean_sidereal_time_deg
+		self.assertAlmostEqual(gmst, 174.771113474402, places = 5)
