@@ -22,16 +22,18 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 import sys
 import skylib
+import datetime
 
 from FriendlyArgumentParser import FriendlyArgumentParser
 
 parser = FriendlyArgumentParser()
+parser.add_argument("--json", action = "store_true", help = "Output data in JSON format.")
 parser.add_argument("-c", "--user-catalog", metavar = "filename", type = str, action = "append", default = [ ], help = "Specifies user catalogs to read after system catalogs have been read.")
 parser.add_argument("--no-system-catalog", action = "store_true", help = "Do not read system catalogs (by default, ~/.config/ewia/catalog.json and ./.catalog.json are tried)")
-parser.add_argument("--observer-location", metavar = "location", type = str, help = "Observer location on earth. Can be either a reference to the catalog or actual coordinates.")
-parser.add_argument("--observervation-time", metavar = "timestamp", type = str, help = "Observation time.")
-parser.add_argument("--observervation-timezone", metavar = "tzone", type = str, default = "auto", help = "Observation timezone.")
-parser.add_argument("object", help = "Object under observation. Must refer to the catalog.")
+parser.add_argument("-l", "--observer-location", metavar = "location", type = str, required = True, help = "Observer location on earth. Can be either a reference to the catalog or actual coordinates.")
+parser.add_argument("-t", "--observation-time", metavar = "timestamp", type = str, default = "now", help = "Time at which the observation is conducted. Accepts the special argument 'now', which reflects the current time. Otherwise, must be in format YYYY-mm-dd HH:MM:SS.")
+parser.add_argument("-z", "--observation-timezone", metavar = "tzone", type = str, default = "auto", help = "When a timestamp is given, this parameter influences at which timezone the timestamp is interpreted to be in. Can either be a timezone definition such as 'Europe/Berlin' or a static timezone such as 'utc' or 'Etc/GMT+8'. Alternatively, can be set to 'auto' in order to take the timezone that has been specified in the catalog for the observing location. Defaults to %(default)s.")
+parser.add_argument("objects", metavar = "object", nargs = "+", help = "Object under observation. Must refer to the catalog.")
 args = parser.parse_args(sys.argv[1:])
 
 catalog = skylib.ObjectCatalog()
@@ -41,4 +43,39 @@ if not args.no_system_catalog:
 for user_catalog_filename in args.user_catalog:
 	catalog.append_from_file(system_catalog_filename, fail_on_error = True)
 
+try:
+	observer = catalog.get_observer(args.observer_location)
+except KeyError as e:
+	print("No such observer location '%s' found in catalogs." % (args.observer_location))
+	sys.exit(1)
+
+if args.observation_timezone == "auto":
+	# Local time, take timezone form observer location timezone
+	if observer.timezone is None:
+		print("Cannot use timezone of observer location '%s', because it is not set in catalog." % (args.observer_location))
+		sys.exit(1)
+	timezone = observer.timezone
+else:
+	timezone = args.observation_timezone
+
+if args.observation_time == "now":
+	# Timezone automatically UTC
+	obstime = skylib.Time(datetime.datetime.utcnow())
+else:
+	timestamp = datetime.datetime.strptime(args.observation_time, "%Y-%m-%d %H:%M:%S")
+	obstime = skylib.Time.from_localtime(args.observation_time, timezone)
+
+data_printer = skylib.DataPrinter(args.observer_location, observer, [ obstime ], timezone)
+for obs_object_name in args.objects:
+	try:
+		obs_object = catalog.get_object(obs_object_name)
+	except KeyError:
+		print("Cannot find object by name '%s' in catalogs." % (obs_object_name))
+		sys.exit(1)
+
+	data_printer.add_object(obs_object_name, obs_object)
+if args.json:
+	print(data_printer.json())
+else:
+	data_printer.dump()
 

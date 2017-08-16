@@ -31,6 +31,14 @@ class ObjectCatalog(object):
 		self._deepsky_objs = { }
 		self._ephemeris_objs = { }
 
+	def get_observer(self, name):
+		return self._earth_objs[name]
+
+	def get_object(self, name):
+		if name in self._deepsky_objs:
+			return self._deepsky_objs[name]
+		return self._ephemeris_objs[name]
+
 	def append_from_file(self, filename, fail_on_error = True):
 		try:
 			with open(filename) as f:

@@ -23,13 +23,14 @@ import re
 from skylib.Tools import ParseTools, FormatTools
 
 class Observer(object):
-	def __init__(self, latitude, longitude):
+	def __init__(self, latitude, longitude, timezone = None):
 		assert(isinstance(latitude, float))
 		assert(isinstance(longitude, float))
 		assert(-90 < latitude <= 90)
 		assert(-180 < longitude <= 180)
 		self.__latitude = latitude
 		self.__longitude = longitude
+		self.__timezone = timezone
 
 	@property
 	def latitude(self):
@@ -38,6 +39,10 @@ class Observer(object):
 	@property
 	def longitude(self):
 		return self.__longitude
+
+	@property
+	def timezone(self):
+		return self.__timezone
 
 	@property
 	def latitude_str_dms(self):
@@ -56,14 +61,14 @@ class Observer(object):
 		return ParseTools.parse_deg(("W", ), ("E", ), text)
 
 	@classmethod
-	def from_str(cls, latitude_str, longitude_str):
+	def from_str(cls, latitude_str, longitude_str, timezone = None):
 		latitude = cls.latitude_from_string(latitude_str)
 		longitude = cls.longitude_from_string(longitude_str)
-		return cls(latitude = latitude, longitude = longitude)
+		return cls(latitude = latitude, longitude = longitude, timezone = timezone)
 
 	@classmethod
 	def from_data(cls, data):
-		return cls.from_str(data["latitude"], data["longitude"])
+		return cls.from_str(data["latitude"], data["longitude"], timezone = data.get("timezone"))
 
 	def __str__(self):
 		return "%s, %s" % (self.latitude_str_dms, self.longitude_str_dms)

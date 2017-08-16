@@ -22,6 +22,10 @@ class Time(object):
 		utc_time = local_time.astimezone(pytz.utc)
 		return cls(utc_time)
 
+	def format_in_timezone(self, timezone_name):
+		local_ts = pytz.utc.localize(self._time_utc).astimezone(pytz.timezone(timezone_name))
+		return local_ts.strftime("%Y-%m-%d %H:%M:%S")
+
 	@classmethod
 	def from_localtime_str(cls, local_time_str, timezone_str):
 		return cls.from_localtime(datetime.datetime.strptime(local_time_str, "%Y-%m-%d %H:%M:%S"), timezone_str)
