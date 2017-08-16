@@ -32,6 +32,15 @@ class Observer(object):
 		self.__longitude = longitude
 		self.__timezone = timezone
 
+	def json(self):
+		result = {
+			"lat":	self.latitude,
+			"lon":	self.longitude,
+		}
+		if self.__timezone is not None:
+			result["tz"] = self.__timezone
+		return result
+
 	@property
 	def latitude(self):
 		return self.__latitude

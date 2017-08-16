@@ -53,5 +53,13 @@ class DataPrinter(object):
 		result = {
 			"observer":		self.__observer.json(),
 			"timezone":		self.__timezone,
+			"timestamps":	[ ts.json(self.__timezone) for ts in self.__timestamps ],
+			"observations":	[ ],
 		}
+		for ((obs_obj_name, obs_obj), apparent_positions) in zip(self.__objects, self.__apparent_positions):
+			observation = { }
+			observation["obj_name"] = obs_obj_name
+			observation["apparent_positions"] = [ apparent_position.json() for apparent_position in apparent_positions ]
+			result["observations"].append(observation)
 		return result
+

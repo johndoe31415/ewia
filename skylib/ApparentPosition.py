@@ -50,6 +50,14 @@ class ApparentPosition(object):
 		self.__observer_location = observer_location
 		self.__observation_time = observation_time
 
+	def json(self):
+		return {
+			"alt":	self.altitude,
+			"az":	self.azimuth,
+			"ra":	self.observed_object.ra,
+			"dec":	self.observed_object.dec,
+		}
+
 	@property
 	def altitude(self):
 		return self.__altitude
