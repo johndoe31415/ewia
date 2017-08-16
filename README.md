@@ -1,4 +1,3 @@
-# Rewrite in progress!
 [![Build Status](https://travis-ci.org/johndoe31415/ewia.svg?branch=master)](https://travis-ci.org/johndoe31415/ewia)
 
 # ewia
