@@ -19,30 +19,23 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
-import re
-from skylib.Tools import ParseTools
+import unittest
 
-class DeepSkyPos(object):
-	def __init__(self, ra, dec):
-		assert(isinstance(ra, float))
-		assert(isinstance(dec, float))
-		assert(0 <= ra < 24)
-		assert(-90 < dec < 90)
-		self.__ra = ra
-		self.__dec = dec
-		print(self)
+from skylib import Observer
 
-	@property
-	def ra(self):
-		return self.__ra
+class ObserverTests(unittest.TestCase):
+	def test_pos1(self):
+		pos = Observer.from_str("N 12.3456", "E 12.34")
+		self.assertAlmostEqual(pos.latitude, 12.3456)
+		self.assertAlmostEqual(pos.longitude, 12.34)
 
-	@property
-	def dec(self):
-		return self.__dec
+		pos = Observer.from_str("S 12.3456", "E 12.34")
+		self.assertAlmostEqual(pos.latitude, -12.3456)
+		self.assertAlmostEqual(pos.longitude, 12.34)
 
-	@classmethod
-	def from_data(cls, data):
-		return cls(ra = ParseTools.parse_hms(data["ra"]), dec = ParseTools.parse_deg(("-", ), ("+", ""), data["dec"]))
+		pos = Observer.from_str("S 12.3456", "W 12.34")
+		self.assertAlmostEqual(pos.latitude, -12.3456)
+		self.assertAlmostEqual(pos.longitude, -12.34)
 
-	def __str__(self):
-		return "DeepSkyPos<RA = %.3f hrs, dec = %.3f°>" % (self.ra, self.dec)
+	def test_pos_deg(self):
+		pos = Observer.from_str("N 5° 7' 11.201\"", "E 11° 13' 17.101\"")

@@ -20,14 +20,14 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 import re
-from skylib.Tools import ParseTools
+from skylib.Tools import ParseTools, FormatTools
 
-class EarthPos(object):
+class Observer(object):
 	def __init__(self, latitude, longitude):
 		assert(isinstance(latitude, float))
 		assert(isinstance(longitude, float))
-		assert(-180 < latitude <= 180)
-		assert(-90 < longitude <= 90)
+		assert(-90 < latitude <= 90)
+		assert(-180 < longitude <= 180)
 		self.__latitude = latitude
 		self.__longitude = longitude
 
@@ -39,23 +39,13 @@ class EarthPos(object):
 	def longitude(self):
 		return self.__longitude
 
-	@staticmethod
-	def __value_to_str_dms_fract(value):
-		seconds = round(value * 3600000)
-		return "%d°%d′%d.%03d″" % (seconds // 3600000, seconds % 3600000 // 60000, seconds % 3600000 % 60000 // 1000, seconds % 3600000 % 60000 % 1000)
-
-	@staticmethod
-	def __value_to_str_dms(value):
-		seconds = round(value * 3600)
-		return "%d°%d′%d″" % (seconds // 3600, seconds % 3600 // 60, seconds % 3600 % 60)
-
 	@property
 	def latitude_str_dms(self):
-		return "SN"[self.__latitude > 0] + self.__value_to_str_dms(abs(self.__latitude))
+		return FormatTools.format_deg(self.latitude, "S", "N")
 
 	@property
 	def longitude_str_dms(self):
-		return "WE"[self.__longitude > 0] + " " + self.__value_to_str_dms(abs(self.__longitude))
+		return FormatTools.format_deg(self.longitude, "W", "E")
 
 	@classmethod
 	def latitude_from_string(cls, text):
@@ -79,6 +69,6 @@ class EarthPos(object):
 		return "%s, %s" % (self.latitude_str_dms, self.longitude_str_dms)
 
 if __name__ == "__main__":
-	#x = EarthPos.from_str("N 1° 2' 3.456''", "E12")
-	x = EarthPos.from_str("N 1° 2' 3.456''", "E0")
+	#x = Observer.from_str("N 1° 2' 3.456''", "E12")
+	x = Observer.from_str("N 1° 2' 3.456''", "E0")
 	print(x)

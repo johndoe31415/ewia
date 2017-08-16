@@ -28,6 +28,10 @@ from FriendlyArgumentParser import FriendlyArgumentParser
 parser = FriendlyArgumentParser()
 parser.add_argument("-c", "--user-catalog", metavar = "filename", type = str, action = "append", default = [ ], help = "Specifies user catalogs to read after system catalogs have been read.")
 parser.add_argument("--no-system-catalog", action = "store_true", help = "Do not read system catalogs (by default, ~/.config/ewia/catalog.json and ./.catalog.json are tried)")
+parser.add_argument("--observer-location", metavar = "location", type = str, help = "Observer location on earth. Can be either a reference to the catalog or actual coordinates.")
+parser.add_argument("--observervation-time", metavar = "timestamp", type = str, help = "Observation time.")
+parser.add_argument("--observervation-timezone", metavar = "tzone", type = str, default = "auto", help = "Observation timezone.")
+parser.add_argument("object", help = "Object under observation. Must refer to the catalog.")
 args = parser.parse_args(sys.argv[1:])
 
 catalog = skylib.ObjectCatalog()

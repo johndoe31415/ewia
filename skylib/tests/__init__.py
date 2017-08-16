@@ -20,4 +20,6 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 from .TrivialTests import TrivialTests
-from .EarthPosTests import EarthPosTests
+from .ObserverTests import ObserverTests
+from .TimeTests import TimeTests
+from .DeepSkyTests import DeepSkyTests

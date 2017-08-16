@@ -2,15 +2,18 @@
 	"earth": {
 		"Bamberg": {
 			"latitude": "N 49.884559°",
-			"longitude": "E 10.888149°"
+			"longitude": "E 10.888149°",
+			"timezone": "Europe/Berlin"
 		},
 		"Neumarkt": {
 			"latitude": "N 49.294177°",
-			"longitude": "E 11.491769°"
+			"longitude": "E 11.491769°",
+			"timezone": "Europe/Berlin"
 		},
 		"Böblingen": {
 			"latitude": "N 48.687646°",
-			"longitude": "E 9.004691°"
+			"longitude": "E 9.004691°",
+			"timezone": "Europe/Berlin"
 		}
 	},
 	"deepsky": {

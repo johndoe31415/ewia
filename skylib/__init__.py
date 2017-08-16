@@ -20,4 +20,6 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 from .ObjectCatalog import ObjectCatalog
-from .EarthPos import EarthPos
+from .Observer import Observer
+from .Time import Time
+from .DeepSkyObject import DeepSkyObject

@@ -23,7 +23,7 @@
 from DATE import DATE
 from SkyPos import SkyPos
 from Ephemeris import Ephemeris
-from EarthPos import EarthPos
+from Observer import Observer
 
 class CalculationParameters():
 	def __init__(self, options):
@@ -44,7 +44,7 @@ class CalculationParameters():
 		else:
 			self.__data["object"] = SkyPos(self.__options["object"][0], self.__options["object"][1])
 
-		self.__data["localpos"] = EarthPos(self.__options["location"][0], self.__options["location"][1])
+		self.__data["localpos"] = Observer(self.__options["location"][0], self.__options["location"][1])
 
 	def recalculate_skypos(self, newdate):
 		if not self.__options["ephemeris"]:

@@ -20,6 +20,39 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 import re
+import math
+
+class FormatTools(object):
+	@classmethod
+	def format_deg(cls, deg, negative_sign = "-", positive_sign = "+", fractional = False):
+		if deg >= 0:
+			sign = positive_sign
+		else:
+			sign = negative_sign
+			deg = abs(deg)
+
+		if fractional:
+			secthou = round(deg * 3600000)
+			return "%s%d°%d′%d.%03d″" % (sign, secthou // 3600000, secthou % 3600000 // 60000, secthou % 3600000 % 60000 // 1000, secthou % 3600000 % 60000 % 1000)
+		else:
+			seconds = round(deg * 3600)
+			return "%s%d°%d′%d″" % (sign, seconds // 3600, seconds % 3600 // 60, seconds % 3600 % 60)
+
+	@classmethod
+	def format_hms(cls, hours, fractional = False):
+		if hours >= 0:
+			sign = ""
+		else:
+			sign = "-"
+			hours = abs(hours)
+
+		if fractional:
+			secthou = round(hours * 3600000)
+			return "%s%02d:%02d:%02d.%03d″" % (sign, secthou // 3600000, secthou % 3600000 // 60000, secthou % 3600000 % 60000 // 1000, secthou % 3600000 % 60000 % 1000)
+		else:
+			seconds = round(hours * 3600)
+			return "%s%02d:%02d:%02d" % (sign, seconds // 3600, seconds % 3600 // 60, seconds % 3600 % 60)
+
 
 class ParseTools(object):
 	_hms_re = re.compile("(?P<hrs>\d{1,2}):((?P<minutes_float>\d{2}(\.\d*)?)|(?P<minutes_int>\d{2}):(?P<seconds>\d{2}(\.\d*)?))")
@@ -84,4 +117,13 @@ class ParseTools(object):
 		if result["sign"] in negative_prefix:
 			fresult = -fresult
 		return fresult
+
+class MathTools(object):
+	@classmethod
+	def dsin(cls, degrees):
+		return math.sin(degrees / 180 * math.pi)
+
+	@classmethod
+	def dcos(cls, degrees):
+		return math.cos(degrees / 180 * math.pi)
 

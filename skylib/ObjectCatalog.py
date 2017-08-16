@@ -21,8 +21,8 @@
 
 import json
 import os
-from .EarthPos import EarthPos
-from .DeepSkyPos import DeepSkyPos
+from .Observer import Observer
+from .DeepSkyObject import DeepSkyObject
 from .OrbitalElements import OrbitalElements
 
 class ObjectCatalog(object):
@@ -44,11 +44,11 @@ class ObjectCatalog(object):
 		data = json.loads(data)
 
 		for (objname, objdata) in data.get("earth", { }).items():
-			pos = EarthPos.from_data(objdata)
+			pos = Observer.from_data(objdata)
 			self._earth_objs[objname] = pos
 
 		for (objname, objdata) in data.get("deepsky", { }).items():
-			pos = DeepSkyPos.from_data(objdata)
+			pos = DeepSkyObject.from_data(objdata)
 			self._deepsky_objs[objname] = pos
 
 		for (objname, objdata) in data.get("ephemeris", { }).items():
