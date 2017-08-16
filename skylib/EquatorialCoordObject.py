@@ -26,7 +26,7 @@ from skylib.Observer import Observer
 from skylib.Time import Time
 from skylib.ApparentPosition import ApparentPosition
 
-class DeepSkyObject(object):
+class EquatorialCoordObject(object):
 	def __init__(self, ra, dec):
 		assert(isinstance(ra, float))
 		assert(isinstance(dec, float))
@@ -82,5 +82,5 @@ class DeepSkyObject(object):
 		return ApparentPosition(altitude = altitude, azimuth = azimuth, observed_object = self, observer_location = observer, observation_time = obstime)
 
 	def __str__(self):
-		return "DeepSkyObject<RA = %s, DEC = %s>" % (self.ra_str, self.dec_str)
+		return "EquatorialCoordObject<RA = %s, DEC = %s>" % (self.ra_str, self.dec_str)
 

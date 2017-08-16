@@ -22,4 +22,4 @@
 from .TrivialTests import TrivialTests
 from .ObserverTests import ObserverTests
 from .TimeTests import TimeTests
-from .DeepSkyTests import DeepSkyTests
+from .EquatorialCoordTests import EquatorialCoordTests

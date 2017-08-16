@@ -22,7 +22,7 @@
 import json
 import os
 from .Observer import Observer
-from .DeepSkyObject import DeepSkyObject
+from .EquatorialCoordObject import EquatorialCoordObject
 from .OrbitalElements import OrbitalElements
 
 class ObjectCatalog(object):
@@ -48,7 +48,7 @@ class ObjectCatalog(object):
 			self._earth_objs[objname] = pos
 
 		for (objname, objdata) in data.get("deepsky", { }).items():
-			pos = DeepSkyObject.from_data(objdata)
+			pos = EquatorialCoordObject.from_data(objdata)
 			self._deepsky_objs[objname] = pos
 
 		for (objname, objdata) in data.get("ephemeris", { }).items():

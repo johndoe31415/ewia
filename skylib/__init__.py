@@ -22,4 +22,4 @@
 from .ObjectCatalog import ObjectCatalog
 from .Observer import Observer
 from .Time import Time
-from .DeepSkyObject import DeepSkyObject
+from .EquatorialCoordObject import EquatorialCoordObject

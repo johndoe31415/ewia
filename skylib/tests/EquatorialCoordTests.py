@@ -21,14 +21,14 @@
 
 import unittest
 
-from skylib import DeepSkyObject, Observer, Time
+from skylib import EquatorialCoordObject, Observer, Time
 
-class DeepSkyTests(unittest.TestCase):
+class EquatorialCoordTests(unittest.TestCase):
 	def test_deepsky1(self):
 		# http://www.convertalot.com/celestial_horizon_co-ordinates_calculator.html
 		observer = Observer.from_str("N 42° 21'", "W 71° 4'")
 		obstime = Time.from_str("2004-04-06 19:00:00Z")
-		dsobject = DeepSkyObject.from_str("03:47", "+24° 7'")
+		dsobject = EquatorialCoordObject.from_str("03:47", "+24° 7'")
 		apparent = dsobject.calculate_apparent_position(observer, obstime)
 		self.assertAlmostEqual(apparent.altitude, 70.76031714756199, places = 2)
 		self.assertAlmostEqual(apparent.azimuth, 159.05385342558554, places = 2)
@@ -37,7 +37,7 @@ class DeepSkyTests(unittest.TestCase):
 		# http://www.stargazing.net/kepler/altaz.html
 		observer = Observer.from_str("N 52° 30'", "W 1° 55'")
 		obstime = Time.from_str("1998-08-10 23:10:00Z")
-		dsobject = DeepSkyObject.from_str("16:41.7", "36° 28'")
+		dsobject = EquatorialCoordObject.from_str("16:41.7", "36° 28'")
 
 		self.assertAlmostEqual(dsobject.ra, 16.695)
 		self.assertAlmostEqual(dsobject.dec, 36.466667, places = 6)
@@ -55,7 +55,7 @@ class DeepSkyTests(unittest.TestCase):
 	def test_deepsky_stellarium(self):
 		observer = Observer.from_str("N 48° 51' 12.27\"", "E 2° 20' 55.68\"")
 		obstime = Time.from_localtime_str("2017-08-16 23:25:22", "Europe/Paris")
-		dsobject = DeepSkyObject.from_str("20:22:00.54", "-14° 43' 20.4\"")		# beta Cap
+		dsobject = EquatorialCoordObject.from_str("20:22:00.54", "-14° 43' 20.4\"")		# beta Cap
 
 		apparent = dsobject.calculate_apparent_position(observer, obstime)
 		self.assertAlmostEqual(apparent.azimuth, 162 + (32 / 60) + (50.2 / 3600), places = 2)
