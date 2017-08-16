@@ -70,13 +70,13 @@ class OrbitalElements(object):
 		if "e" not in data:
 			raise Exception("Orbital element \"e\" (ellipse eccentricity) missing.")
 		if "i" not in data:
-			raise Exception("Orbital element \"i\" (inclination, given in TODO) missing.")
+			raise Exception("Orbital element \"i\" (inclination, given in degrees) missing.")
 		if "Omega" not in data:
-			raise Exception("Orbital element \"Omega\" (longitude of the ascending node) missing.")
+			raise Exception("Orbital element \"Omega\" (longitude of the ascending node, given in degrees) missing.")
 		if "omega" not in data:
-			raise Exception("Orbital element \"omega\" (argument of the periapsis) missing.")
+			raise Exception("Orbital element \"omega\" (argument of the periapsis, given in degrees) missing.")
 		if "T" not in data:
-			raise Exception("Orbital element \"T\" (epoch, given as Julian Day) missing.")
+			raise Exception("Orbital element \"T\" (time of the perihelion passage, given as Julian Date) missing.")
 		if "M" not in data:
 			raise Exception("Orbital element \"M\" (object mass, given in solar masses) missing.")
 		return cls(a = data["a"], e = data["e"], i = data["i"], Omega = data["Omega"], omega = data["omega"], T = data["T"], M = data["M"])
