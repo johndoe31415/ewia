@@ -51,3 +51,14 @@ class DeepSkyTests(unittest.TestCase):
 		apparent = dsobject.calculate_apparent_position(observer, obstime)
 		self.assertAlmostEqual(apparent.altitude, 49.169122, places = 3)
 		self.assertAlmostEqual(apparent.azimuth, 269.14634, places = 3)
+
+	def test_deepsky_stellarium(self):
+		observer = Observer.from_str("N 48° 51' 12.27\"", "E 2° 20' 55.68\"")
+		obstime = Time.from_localtime_str("2017-08-16 23:25:22", "Europe/Paris")
+		dsobject = DeepSkyObject.from_str("20:22:00.54", "-14° 43' 20.4\"")		# beta Cap
+
+		apparent = dsobject.calculate_apparent_position(observer, obstime)
+		self.assertAlmostEqual(apparent.azimuth, 162 + (32 / 60) + (50.2 / 3600), places = 2)
+		self.assertAlmostEqual(apparent.altitude, 24 + (49 / 60) + (28.4 / 3600), places = 1)
+
+

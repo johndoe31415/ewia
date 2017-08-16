@@ -17,7 +17,14 @@ class Time(object):
 	@classmethod
 	def from_localtime(cls, local_time, timezone_str):
 		assert(isinstance(local_time, datetime.datetime))
-		raise Exception(NotImplemented)
+		timezone =  pytz.timezone(timezone_str)
+		local_time = timezone.localize(local_time)
+		utc_time = local_time.astimezone(pytz.utc)
+		return cls(utc_time)
+
+	@classmethod
+	def from_localtime_str(cls, local_time_str, timezone_str):
+		return cls.from_localtime(datetime.datetime.strptime(local_time_str, "%Y-%m-%d %H:%M:%S"), timezone_str)
 
 	@classmethod
 	def from_str(cls, time_str):
