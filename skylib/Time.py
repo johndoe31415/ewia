@@ -31,13 +31,28 @@ class Time(object):
 		return cls(datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%SZ"))
 
 	@classmethod
+	def from_timet(cls, timet):
+		return cls(datetime.datetime.utcfromtimestamp(timet))
+
+	@classmethod
+	def from_jd(cls, jd):
+		timet = (jd - 2440587.5) * 86400
+		return cls.from_timet(timet)
+
+	@classmethod
 	def now(cls):
 		return cls(datetime.datetime.utcnow())
 
 	@property
 	def days_since_y2000(self):
-		"""Returns the days since 2000-01-01 12:00:00 UTC."""
+		"""Returns the days since J2000.0 (2000-01-01 12:00:00 UTC)."""
 		return (self.timet - self._y2000_timet) / 86400
+
+	@property
+	def jcent_since_y2000(self):
+		"""Returns the Julian centuries since J2000.0 (2000-01-01 12:00:00
+		UTC)."""
+		return self.days_since_y2000 / 36525
 
 	@property
 	def timet(self):
@@ -54,8 +69,7 @@ class Time(object):
 	def greenwich_mean_sidereal_time_deg(self):
 		"""Returns GMST (Greenwich Mean Sidereal Time) in degrees, as described
 		by Keith Burnett (http://www2.arnes.si/~gljsentvid10/sidereal.htm)."""
-		t = self.days_since_y2000 / 36525
-		gmst_deg = 280.46061837 + (360.98564736629 * self.days_since_y2000) + (0.000388 * (t ** 2))
+		gmst_deg = 280.46061837 + (360.98564736629 * self.days_since_y2000) + (0.000388 * (self.jcent_since_y2000 ** 2))
 		return gmst_deg % 360
 
 	def local_mean_sidereal_time_deg(self, observer):

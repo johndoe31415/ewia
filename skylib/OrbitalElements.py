@@ -133,27 +133,30 @@ class OrbitalElements(object):
 			"chpv3":	chpv3_x,	# CHPV'''
 		}
 
+	@staticmethod
+	def __calculate_earth_obliquity_deg(obstime):
+		# Formula from JPL's Astonomical Almanac for 2010
+		T = obstime.jcent_since_y2000
+		epsilon = (23 + (26 / 60) + (21.406 / 3600)) + (1 / 3600) * (
+			-46.836769 * T
+			- 0.0001831 * (T ** 2)
+			+ 0.00200340 * (T ** 3)
+			- 5.76e-7 * (T ** 4)
+			- 4.34e-8 * (T ** 5)
+		)
+		return epsilon
 
-	def calculate_equatorial_position(self, observer, obstime, from_orbital_element = None):
-		if from_orbital_element is None:
-			from_orbital_element = self._EARTH
-
-		t = obstime.jd
-
-		# Parameters of earth and the other object
-		pe = from_orbital_element
-		px = self
-
+	def calculate_equatorial_position(self, observer, obstime):
 		# Calculations for object
-		res_e = pe.__orbital_vectors_at_julian_date(t)
-		res_x = px.__orbital_vectors_at_julian_date(t)
+		res_e = self._EARTH.__orbital_vectors_at_julian_date(obstime.jd)
+		res_x = self.__orbital_vectors_at_julian_date(obstime.jd)
 
 		# Find the vector difference between the heliocentric position vector of object X and
 		# the heliocentric position vector to Earth.
 		d = res_x["chpv"] - res_e["chpv"]
 
-		# Find the current obliquity of Earth.
-		epsilon = (23.439282 - 3.563e-7 * (t - 2451543.5)) / 180 * math.pi
+		# Find the current obliquity of Earth and convert to rad.
+		epsilon = self.__calculate_earth_obliquity_deg(obstime) / 180 * math.pi
 
 		d1 = d.rotate_yz(epsilon)
 
@@ -166,8 +169,8 @@ class OrbitalElements(object):
 		equatorial_pos = EquatorialCoordObject(right_ascension_hrs, declination_deg)
 		return equatorial_pos
 
-	def calculate_apparent_position(self, observer, obstime, from_orbital_element = None):
-		equatorial_pos = self.calculate_equatorial_position(observer, obstime, from_orbital_element)
+	def calculate_apparent_position(self, observer, obstime):
+		equatorial_pos = self.calculate_equatorial_position(observer, obstime)
 		return equatorial_pos.calculate_apparent_position(observer, obstime)
 
 	def __str__(self):
