@@ -67,12 +67,22 @@ and also of course dump everything as JSON:
 
 ```
 $ ./ewia -l Bamberg --json M17
-{'observations': [{'apparent_positions': [{'alt': 23.140340983650894, 'dec':
--16.183333333333334, 'az': 192.13736107303203, 'ra': 18.346666666666668}],
-'obj_name': 'M17'}], 'observer': {'lon': 10.888149, 'tz': 'Europe/Berlin',
-'lat': 49.884559}, 'timezone': 'Europe/Berlin', 'timestamps': [{'timet':
-1502916119, 'ts_local': '2017-08-16 22:41:59', 'ts_utc': '2017-08-16
-20:41:59'}]}
+{'observer': {'lat': 49.884559, 'lon': 10.888149, 'tz': 'Europe/Berlin'},
+'timezone': 'Europe/Berlin', 'timestamps': [{'timet': 1535186887, 'ts_utc':
+'2018-08-25 08:48:07', 'ts_local': '2018-08-25 10:48:07'}], 'observations':
+[{'obj_name': 'M17', 'positions': [{'apparent': {'altitide': {'deg':
+-52.158318500088335, 'pretty': '-52°9′30″'}, 'azimuth': {'deg':
+34.639970963487116, 'pretty': '+34°38′24″'}}, 'equatorial': {'ra': {'hrs':
+18.346666666666668, 'deg': 275.2, 'pretty': '18:20:48'}, 'dec': {'deg':
+-16.183333333333334, 'pretty': '-16°11′0″'}}}]}]}
+```
+
+It can also calculate the position of the sun:
+
+```
+./ewia -l Böblingen Sol
+Observer location: Böblingen (N48°41′16″, E9°0′17″), at time 2018-08-25 10:48:43 (Europe/Berlin)
+    Sol: Altitude 39.9°, Azimuth 125.7° (SE)
 ```
 
 # Author and License

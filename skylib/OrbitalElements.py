@@ -133,9 +133,9 @@ class OrbitalElements(object):
 			"chpv3":	chpv3_x,	# CHPV'''
 		}
 
-	@staticmethod
-	def __calculate_earth_obliquity_deg(obstime):
-		# Formula from JPL's Astonomical Almanac for 2010
+	@classmethod
+	def calculate_earth_obliquity_deg(cls, obstime):
+		# Formula from JPL's Astonomical Almanac for 2010, returns epsilon
 		T = obstime.jcent_since_y2000
 		epsilon = (23 + (26 / 60) + (21.406 / 3600)) + (1 / 3600) * (
 			-46.836769 * T
@@ -156,7 +156,7 @@ class OrbitalElements(object):
 		d = res_x["chpv"] - res_e["chpv"]
 
 		# Find the current obliquity of Earth and convert to rad.
-		epsilon = self.__calculate_earth_obliquity_deg(obstime) / 180 * math.pi
+		epsilon = self.calculate_earth_obliquity_deg(obstime) / 180 * math.pi
 
 		d1 = d.rotate_yz(epsilon)
 

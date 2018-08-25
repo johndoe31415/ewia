@@ -59,7 +59,6 @@ class DataPrinter(object):
 		for ((obs_obj_name, obs_obj), apparent_positions) in zip(self.__objects, self.__apparent_positions):
 			observation = { }
 			observation["obj_name"] = obs_obj_name
-			observation["apparent_positions"] = [ apparent_position.json() for apparent_position in apparent_positions ]
+			observation["positions"] = [ apparent_position.json() for apparent_position in apparent_positions ]
 			result["observations"].append(observation)
 		return result
-

@@ -24,6 +24,7 @@ import os
 from .Observer import Observer
 from .EquatorialCoordObject import EquatorialCoordObject
 from .OrbitalElements import OrbitalElements
+from .SunObject import SunObject
 
 class ObjectCatalog(object):
 	def __init__(self):
@@ -35,6 +36,8 @@ class ObjectCatalog(object):
 		return self._earth_objs[name]
 
 	def get_object(self, name):
+		if name.lower() in [ "sun", "sol" ]:
+			return SunObject()
 		if name in self._deepsky_objs:
 			return self._deepsky_objs[name]
 		return self._ephemeris_objs[name]

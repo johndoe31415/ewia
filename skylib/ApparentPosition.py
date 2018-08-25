@@ -19,6 +19,8 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
+from skylib.Tools import FormatTools
+
 class ApparentPosition(object):
 	_COMPASS_ROSE = {
 		0:		"N",
@@ -53,10 +55,27 @@ class ApparentPosition(object):
 
 	def json(self):
 		return {
-			"alt":	self.altitude,
-			"az":	self.azimuth,
-			"ra":	self.observed_object.ra,
-			"dec":	self.observed_object.dec,
+			"apparent":	{
+				"altitide": {
+					"deg":		self.altitude,
+					"pretty":	FormatTools.format_deg(self.altitude),
+				},
+				"azimuth": {
+					"deg":		self.azimuth,
+					"pretty":	FormatTools.format_deg(self.azimuth),
+				},
+			},
+			"equatorial": {
+				"ra":	{
+					"hrs":		self.observed_object.ra,
+					"deg":		self.observed_object.ra_deg,
+					"pretty":	self.observed_object.ra_str,
+				},
+				"dec": {
+					"deg":		self.observed_object.dec,
+					"pretty":	self.observed_object.dec_str,
+				},
+			},
 		}
 
 	@property
