@@ -41,7 +41,7 @@ if not args.no_system_catalog:
 	for system_catalog_filename in [ "~/.config/ewia/catalog.json", ".catalog.json" ]:
 		catalog.append_from_file(system_catalog_filename, fail_on_error = False)
 for user_catalog_filename in args.user_catalog:
-	catalog.append_from_file(system_catalog_filename, fail_on_error = True)
+	catalog.append_from_file(user_catalog_filename, fail_on_error = True)
 
 try:
 	observer = catalog.get_observer(args.observer_location)
