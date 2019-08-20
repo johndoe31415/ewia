@@ -20,6 +20,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
+
 import sys
 import skylib
 import datetime
@@ -33,6 +34,7 @@ parser.add_argument("--no-system-catalog", action = "store_true", help = "Do not
 parser.add_argument("-l", "--observer-location", metavar = "location", type = str, required = True, help = "Observer location on earth. Can be either a reference to the catalog or actual coordinates.")
 parser.add_argument("-t", "--observation-time", metavar = "timestamp", type = str, default = "now", help = "Time at which the observation is conducted. Accepts the special argument 'now', which reflects the current time. Otherwise, must be in format YYYY-mm-dd HH:MM:SS.")
 parser.add_argument("-z", "--observation-timezone", metavar = "tzone", type = str, default = "auto", help = "When a timestamp is given, this parameter influences at which timezone the timestamp is interpreted to be in. Can either be a timezone definition such as 'Europe/Berlin' or a static timezone such as 'utc' or 'Etc/GMT+8'. Alternatively, can be set to 'auto' in order to take the timezone that has been specified in the catalog for the observing location. Defaults to %(default)s.")
+parser.add_argument("-v", "--verbose", action = "count", default = 0, help = "Increase verbosity of output. Can be specified multiple times.")
 parser.add_argument("objects", metavar = "object", nargs = "+", help = "Object under observation. Must refer to the catalog.")
 args = parser.parse_args(sys.argv[1:])
 
@@ -63,7 +65,10 @@ if args.observation_time == "now":
 	obstime = skylib.Time(datetime.datetime.utcnow())
 else:
 	timestamp = datetime.datetime.strptime(args.observation_time, "%Y-%m-%d %H:%M:%S")
-	obstime = skylib.Time.from_localtime(args.observation_time, timezone)
+	obstime = skylib.Time.from_localtime(timestamp, timezone)
+
+if args.verbose >= 1:
+	print("Observation time: %s" % (obstime), file = sys.stderr)
 
 data_printer = skylib.DataPrinter(args.observer_location, observer, [ obstime ], timezone)
 for obs_object_name in args.objects:

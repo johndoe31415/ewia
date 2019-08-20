@@ -19,7 +19,8 @@ class Time(object):
 		assert(isinstance(local_time, datetime.datetime))
 		timezone =  pytz.timezone(timezone_str)
 		local_time = timezone.localize(local_time)
-		utc_time = local_time.astimezone(pytz.utc)
+		utc_time_with_zone = local_time.astimezone(pytz.utc)
+		utc_time = utc_time_with_zone.replace(tzinfo = None)
 		return cls(utc_time)
 
 	def json(self, timezone_name = None):
