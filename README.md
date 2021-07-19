@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/johndoe31415/ewia.svg?branch=master)](https://travis-ci.org/johndoe31415/ewia)
-
 # ewia
+[![Build Status](https://travis-ci.com/johndoe31415/ewia.svg?branch=master)](https://travis-ci.com/johndoe31415/ewia)
+
 Ewia is a tool to calculate the apparent sky position (i.e., azimuth and
 elevation) of astronomical objects such as stars or planets. It's an ancient
 project of mine (dates back to 2009) and was almost completely rewritten in
