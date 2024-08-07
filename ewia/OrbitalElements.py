@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2017-2017 Johannes Bauer
+#   Copyright (C) 2017-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -23,7 +23,7 @@ import math
 from ewia.VectorR3 import VectorR3
 from ewia.EquatorialCoordObject import EquatorialCoordObject
 
-class OrbitalElements(object):
+class OrbitalElements():
 	_EARTH = None
 
 	def __init__(self, a, e, i, Omega, omega, T, M):

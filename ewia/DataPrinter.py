@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2017-2017 Johannes Bauer
+#   Copyright (C) 2017-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -19,7 +19,7 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
-class DataPrinter(object):
+class DataPrinter():
 	def __init__(self, observer_name, observer, obs_timestamps, timezone):
 		self.__timezone = timezone
 		self.__observer_name = observer_name

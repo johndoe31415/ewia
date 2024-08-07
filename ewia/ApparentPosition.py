@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2017-2017 Johannes Bauer
+#   Copyright (C) 2017-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -21,7 +21,7 @@
 
 from ewia.Tools import FormatTools
 
-class ApparentPosition(object):
+class ApparentPosition():
 	_COMPASS_ROSE = {
 		0:		"N",
 		22.5:	"NNE",

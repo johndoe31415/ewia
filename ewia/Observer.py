@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2009-2017 Johannes Bauer
+#   Copyright (C) 2009-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -22,7 +22,7 @@
 import re
 from ewia.Tools import ParseTools, FormatTools
 
-class Observer(object):
+class Observer():
 	def __init__(self, latitude, longitude, timezone = None):
 		assert(isinstance(latitude, float))
 		assert(isinstance(longitude, float))

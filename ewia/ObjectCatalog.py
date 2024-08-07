@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2017-2017 Johannes Bauer
+#   Copyright (C) 2017-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -26,7 +26,7 @@ from .EquatorialCoordObject import EquatorialCoordObject
 from .OrbitalElements import OrbitalElements
 from .SunObject import SunObject
 
-class ObjectCatalog(object):
+class ObjectCatalog():
 	def __init__(self):
 		self._earth_objs = { }
 		self._deepsky_objs = { }

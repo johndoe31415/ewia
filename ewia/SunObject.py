@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2017-2017 Johannes Bauer
+#   Copyright (C) 2017-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -27,7 +27,7 @@ from ewia.ApparentPosition import ApparentPosition
 from ewia.OrbitalElements import OrbitalElements
 from ewia.EquatorialCoordObject import EquatorialCoordObject
 
-class SunObject(object):
+class SunObject():
 	def calculate_equatorial_position(self, observer, obstime):
 		assert(isinstance(observer, Observer))
 		assert(isinstance(obstime, Time))

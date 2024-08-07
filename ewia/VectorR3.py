@@ -1,5 +1,5 @@
 #   ewia - A library to calculate astrophysical object positions
-#   Copyright (C) 2009-2022 Johannes Bauer
+#   Copyright (C) 2009-2024 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -22,7 +22,7 @@
 
 from math import sqrt, sin, cos
 
-class VectorR3(object):
+class VectorR3():
 	def __init__(self, x, y, z):
 		self.__x = x
 		self.__y = y
