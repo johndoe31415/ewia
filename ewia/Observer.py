@@ -23,7 +23,7 @@ import re
 from ewia.Tools import ParseTools, FormatTools
 
 class Observer():
-	def __init__(self, latitude, longitude, timezone = None):
+	def __init__(self, latitude: float, longitude: float, timezone = None):
 		assert(isinstance(latitude, float))
 		assert(isinstance(longitude, float))
 		assert(-90 < latitude <= 90)

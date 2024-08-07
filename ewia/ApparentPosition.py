@@ -42,7 +42,7 @@ class ApparentPosition():
 		360:	"N",
 	}
 
-	def __init__(self, altitude, azimuth, observed_object = None, observer_location = None, observation_time = None):
+	def __init__(self, altitude: float, azimuth: float, observed_object = None, observer_location = None, observation_time = None):
 		assert(isinstance(altitude, float))
 		assert(isinstance(azimuth, float))
 		assert(-90 < altitude <= 90)
