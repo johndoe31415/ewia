@@ -26,4 +26,4 @@ from .EquatorialCoordObject import EquatorialCoordObject
 from .OrbitalElements import OrbitalElements
 from .DataPrinter import DataPrinter
 
-VERSION = "0.0.2"
+VERSION = "0.0.3rc0"
