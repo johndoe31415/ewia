@@ -1,4 +1,4 @@
-#   Ewia - A tool to calculate astrophysical object positions.
+#   ewia - A library to calculate astrophysical object positions
 #   Copyright (C) 2017-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
@@ -19,8 +19,10 @@
 #
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
-from .TrivialTests import TrivialTests
-from .ObserverTests import ObserverTests
-from .TimeTests import TimeTests
-from .EquatorialCoordTests import EquatorialCoordTests
-from .OrbitalElementsTests import OrbitalElementsTests
+import unittest
+
+from ewia import ObjectCatalog
+
+class TrivialTests(unittest.TestCase):
+	def test_object_catalog_init(self):
+		objcat = ObjectCatalog()

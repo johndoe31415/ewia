@@ -1,5 +1,5 @@
-#   Ewia - A tool to calculate astrophysical object positions.
-#   Copyright (C) 2009-2017 Johannes Bauer
+#   ewia - A library to calculate astrophysical object positions
+#   Copyright (C) 2009-2022 Johannes Bauer
 #
 #   This file is part of Ewia.
 #
@@ -62,6 +62,9 @@ class VectorR3(object):
 			self.y * sin(phi) + self.z * cos(phi)
 		)
 
+	def normalize(self):
+		return self / self.length
+
 	def __add__(self, other):
 		return VectorR3(self.x + other.x,
 						self.y + other.y,
@@ -71,6 +74,28 @@ class VectorR3(object):
 		return VectorR3(self.x - other.x,
 						self.y - other.y,
 						self.z - other.z)
+
+	def __rmul__(self, scalar):
+		return self * scalar
+
+	def __mul__(self, scalar):
+		return VectorR3(self.x * scalar,
+						self.y * scalar,
+						self.z * scalar)
+
+	def __truediv__(self, scalar):
+		return self * (1 / scalar)
+
+	def __matmul__(self, other):
+		# Cross product
+		return VectorR3(
+			self.y * other.z - self.z * other.y,
+			self.z * other.x - self.x * other.z,
+			self.x * other.y - self.y * other.x
+		)
+
+	def distance_to_line(self, line_base, line_direction):
+		return ((self - line_base) @ line_direction).length / line_direction.length
 
 	def __repr__(self):
 		return "VecR3<%s>" % (str(self))

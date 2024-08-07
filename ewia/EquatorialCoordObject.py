@@ -1,4 +1,4 @@
-#   Ewia - A tool to calculate astrophysical object positions.
+#   ewia - A library to calculate astrophysical object positions
 #   Copyright (C) 2017-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
@@ -21,10 +21,10 @@
 
 import re
 import math
-from skylib.Tools import ParseTools, MathTools, FormatTools
-from skylib.Observer import Observer
-from skylib.Time import Time
-from skylib.ApparentPosition import ApparentPosition
+from ewia.Tools import ParseTools, MathTools, FormatTools
+from ewia.Observer import Observer
+from ewia.Time import Time
+from ewia.ApparentPosition import ApparentPosition
 
 class EquatorialCoordObject(object):
 	def __init__(self, ra, dec):

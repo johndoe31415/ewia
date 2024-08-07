@@ -1,4 +1,4 @@
-#   Ewia - A tool to calculate astrophysical object positions.
+#   ewia - A library to calculate astrophysical object positions
 #   Copyright (C) 2017-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
@@ -21,7 +21,7 @@
 
 import unittest
 
-from skylib import OrbitalElements, Observer, Time
+from ewia import OrbitalElements, Observer, Time
 
 class OrbitalElementsTests(unittest.TestCase):
 	@staticmethod

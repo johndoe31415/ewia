@@ -1,4 +1,4 @@
-#   Ewia - A tool to calculate astrophysical object positions.
+#   ewia - A library to calculate astrophysical object positions
 #   Copyright (C) 2009-2017 Johannes Bauer
 #
 #   This file is part of Ewia.
@@ -20,7 +20,7 @@
 #   Johannes Bauer <JohannesBauer@gmx.de>
 
 import re
-from skylib.Tools import ParseTools, FormatTools
+from ewia.Tools import ParseTools, FormatTools
 
 class Observer(object):
 	def __init__(self, latitude, longitude, timezone = None):
